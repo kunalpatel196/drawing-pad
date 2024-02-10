@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRAWING-PAD</title>
+    <link rel="icon" href="paint-palette.png">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'poppins',sans-serif;
+        }
+        body{
+           
+           background-attachment: fixed;
+           background-image: url('drawing_paint_monastery_96525_1280x720.jpg');
+           background-repeat: no-repeat;
+           background-size: 100% 100%;
+            min-height: 100vh;
+        }
+        .container{
+            display: flex;
+            width: 100%;
+            min-width: 1050px;
+            gap: 10px;
+            padding: 10px;
+            
+        }
+        section{
+            background: #fff;
+            border-radius: 8px;
+        }
+        .drawing-board{
+            flex: 1;
+            
+        }
+        .tools-board{
+            width: 210px;
+            padding: 15px 22px 0;
+            opacity: 85%;
+        }
+        .tools-board .row{
+            margin-bottom: 20px;
+        }
+        .row .options{
+            list-style: none;
+            margin: 10px 0 0 5px;
+        }
+        .row .options .option{
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .option :where(span,label){
+            color: #5a6168;
+            padding-left: 10px;
+            cursor: pointer;
+        }
+        .option #fill-color{
+            height: 14px;
+            width: 14px;
+            cursor: pointer;
+        }
+        .option:is(:hover,.active) img{
+            filter: brightness(100%) contrast(100%) invert(17%) sepia(90%) saturate(3000%) hue-rotate(900deg);
+        }
+        .option:is(:hover,.active):where(span,label){
+            color: #4a98f7;
+        }
+        #fill-color:checked~label{
+            color: #4a98f7;
+        }
+        .option #size-silder{
+            width: 100%;
+            height: 5px;
+            margin-top: 10px;
+        }
+        .colors .option{
+            height: 20px;
+            width: 20px;
+            display: flex;
+            border-radius: 50%;
+            margin-top: 3px;
+            position: relative;
+        }
+        .colors .option{
+            display: flex;
+            justify-content: space-between;
+
+        }
+        .colors .option:nth-child(1){
+            background-color: red;
+        }
+        .colors .option:nth-child(2){
+            background-color: rgb(0, 0, 0);
+        }
+        .colors .option:nth-child(3){
+            background-color: rgb(0, 255, 0);
+        }
+        .colors .option:nth-child(4){
+            background-color: rgb(17, 0, 255);
+        }
+        .colors .option:nth-child(5){
+            background-color:#fff;
+            border: 3px solid #bfbfbf;
+        }
+        .colors .option.selected::before{
+            position: absolute;
+            content: '';
+            height: 12px;
+            width: 12px;
+            top: 50%;
+            left: 50%;
+            background: inherit;
+            border-radius: inherit;
+            border: 2px solid #fff;
+            transform: translate(-50% ,-50%);
+        }
+        .colors .option:first-child.selected::before{
+           border-color: #eee;
+        }
+        .buttons button{
+            width: 100%;
+            color: #fff;
+            border: none;
+            outline: none;
+            padding: 11px 0;
+            margin-bottom:13px;
+            background: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .buttons .clear-canvas{
+            color: #6c757d;
+            border: 1px solid #6c757d;
+            transition: all 0.3s ease;
+        }
+        .clear-canvas:hover{
+            background: #4a98f7;
+            color:#fff ;
+        }
+        .buttons .save-img{
+            background: #4a98f7;
+            border: 1px solid #4a98f7;
+        }
+        .option #color-picker{
+            opacity: 0;
+            cursor: pointer;
+            
+        }
+        .drawing-board canvas{
+           width: 100%;
+           height: 100%; 
+           
+        }
+        .name {
+            font-size: large;
+            font-weight: 900;
+            opacity: 0.85;
+            transition: color 0.3s ease-in-out, font-size 0.3s ease-in-out;
+        }
+        
+        .name:hover {
+            color: rgb(254, 212, 3);
+            font-size:larger; /* Adjust the size as needed */
+        }
+        *::selection{
+            background-color: #4a98f7;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div style="padding-top: 70px; " class="name">
+        <h1 align="center"><b style="color:rgb(0, 251, 222);">kp</b> &nbsp;<span style="color:red;"><i>gurjar</i></span></h1>
+    </div>
+    
+    <div class="container">
+       
+        <section class="tools-board">
+            <div class="row">
+                <label class="title">shapes</label>
+                <ul class="options">
+                    <li class="option tools" id="rectangle">
+                        <img src="icons/rectangle.svg" alt="rectangle">
+                        <p>Rectangle</p>
+                    </li>
+                    <li class="option tools" id="circle">
+                        <img src="icons/circle.svg" alt="circle">
+                        <p>circle</p>
+                    </li>
+                    <li class="option tools" id="triangle">
+                        <img src="icons/triangle.svg" alt="triangle">
+                        <p>triangle</p>
+                    </li>
+                    <li class="option">
+                        <input type="checkbox" id="fill-color">
+                        <label>fill color</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                <label class="title">options</label>
+                <ul class="options">
+                    <li class="option active tools" id="brush">
+                        <img src="icons/brush.svg" alt="brush">
+                        <p>brush</p>
+                    </li>
+                    <li class="option tools" id="eraser">
+                        <img src="icons/eraser.svg" alt="eraser">
+                        <p>eraser</p>
+                    </li>
+                    <li class="option">
+                        <input type="range" id="size-silder" min="1" max="30" value="5">
+                    </li>
+                </ul>
+            </div>
+            <div class="row colors">
+                <label class="title">colors</label>
+                <ul class="options" style="display: flex; justify-content: space-between;">
+                   <li class="option selected"></li>
+                   <li class="option"></li>
+                   <li class="option"></li>
+                   <li class="option"></li>
+                   <li class="option">
+                    <input type="color" value="#4a98f7" id="color-picker" class="option">
+                   </li>
+                   
+                   
+                </ul>
+            </div>
+            <div class="row buttons">
+                <button class="clear-canvas">clear canvas</button>
+                <button class="save-img">save as image</button>
+            </div>
+        </section>
+        <section class="drawing-board">
+            <canvas></canvas>
+        </section>
+    </div>
+</body>
+<script>
+    const canvas=document.querySelector('canvas'),
+    ctx=canvas.getContext('2d');
+    toolbtns=document.querySelectorAll('.tools'),
+    fillcolor=document.querySelector("#fill-color"),
+    sizesilder=document.querySelector("#size-silder"),
+    colorbtn=document.querySelectorAll(".colors .option"),
+    colorpicker=document.querySelector('#color-picker'),
+    clearcanvas=document.querySelector('.clear-canvas'),
+    saveimg=document.querySelector(".save-img")
+
+
+    let prevMouseX,prevMouseY,spanshot,
+    isdrawing=false,
+    brushwidth=5,
+    selectedTool="brush",
+    selectedColor="#000";
+    window.addEventListener('load',()=>{
+        canvas.height=canvas.offsetHeight;
+        canvas.width=canvas.offsetWidth;
+        setcanvasbackground();
+    })
+    const drawReact=(e)=>{
+        if(!fillcolor.checked){
+            return ctx.strokeRect(e.offsetX,e.offsetY,prevMouseX=e.offsetX,prevMouseY=e.offsetY)
+        }
+        ctx.fillRect(e.offsetX,e.offsetY,prevMouseX=e.offsetX,prevMouseY=e.offsetY)
+        
+    }
+    const drawCircle=(e)=>{
+        ctx.beginPath();
+        let radius=Math.sqrt(Math.pow((prevMouseX-e.offsetX),2)+Math.pow((prevMouseY-e.offsetY),2))
+        ctx.arc(prevMouseX,prevMouseY,radius,0,2*Math.PI);
+        fillcolor.checked?ctx.fill():ctx.stroke();
+    }
+    const drawtri=(e)=>{
+        ctx.beginPath();
+        ctx.moveTo(prevMouseX,prevMouseY);
+        ctx.lineTo(e.offsetX,e.offsetY);
+        ctx.lineTo(prevMouseX*2-e.offsetX,e.offsetY);
+        ctx.closePath();
+        fillcolor.checked?ctx.fill():ctx.stroke();
+    }
+    const drawing=(e)=>{
+        if(!isdrawing)return;
+        ctx.putImageData(spanshot,0,0);
+        if(selectedTool==="brush" || selectedTool==="eraser"){
+            ctx.strokeStyle=selectedTool==="eraser"?"#fff":selectedTool;
+            ctx.lineTo(e.offsetX,e.offsetY);
+            ctx.stroke();
+        }
+        else if(selectedTool==="rectangle"){
+            drawReact(e);
+        }
+        else if(selectedTool==="circle"){
+            drawCircle(e);
+        }
+        else{
+            drawtri(e);
+        }
+        
+    }
+    const startdraw=(e)=>{
+        isdrawing=true;
+        ctx.beginPath()
+        prevMouseX=e.offsetX;
+        prevMouseY=e.offsetY;
+        ctx.lineWidth=brushwidth;
+        ctx.strokeStyle=selectedColor;
+        ctx.fillStyle=selectedColor;
+        spanshot=ctx.getImageData(0,0,canvas.width,canvas.height);
+    }
+    toolbtns.forEach(btn=>{
+        btn.addEventListener("click",()=>{
+            document.querySelector(".options .active").classList.remove("active");
+            btn.classList.add("active");
+            selectedTool=btn.id;
+        })
+    })
+
+    sizesilder.addEventListener("change",()=> brushwidth=sizesilder.value);
+
+    colorbtn.forEach(btn=>{
+        btn.addEventListener("click",()=>{
+            document.querySelector(".options .selected").classList.remove("selected");
+            btn.classList.add("selected");
+            selectedColor=window.getComputedStyle(btn).getPropertyValue("background-color");
+        });
+    });
+    colorpicker.addEventListener('change',()=>{
+        colorpicker.parentElement.style.background=
+        colorpicker.value;
+        colorpicker.parentElement.click();
+    });
+    clearcanvas.addEventListener("click",()=>{
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        setcanvasbackground();
+    })
+    saveimg.addEventListener("click",()=>{
+        const link=document.createElement("a");
+        link.download=`${Date.now()}.jpg`;
+        link.href=canvas.toDataURL();
+        link.click();
+        
+    });
+    const setcanvasbackground=()=>{
+        ctx.fillStyle="#fff";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle=selectedColor;
+    }
+    canvas.addEventListener('mousedown',startdraw);
+    canvas.addEventListener('mousemove',drawing);
+    canvas.addEventListener('mouseup',()=>isdrawing=false);
+</script>
+</html>
